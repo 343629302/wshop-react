@@ -1,0 +1,35 @@
+.layout-left-logo {
+  img {
+    width: 40px;
+  }
+  padding: 20px;
+  margin: 0 20px;
+}
+
+.ant-menu-item {
+  position: relative;
+  &::after {
+    content: '';
+    width: 4px;
+    background: #fff;
+    border-radius: 2px;
+    position: absolute;
+    right: 10px !important;
+    top: 25% !important;
+    bottom: 25% !important;
+    height: 21px;
+  }
+  &:hover {
+    &::after {
+      display: block;
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+}
+.ant-menu-item-selected {
+  background-color: transparent !important;
+  &::after {
+    display: block;
+  }
+}
