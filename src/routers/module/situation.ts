@@ -1,6 +1,6 @@
 const routers = {
   title: '概况',
-  path: '/situation',
+  path: '/',
   icon: 'icon-gaikuang',
 };
 export default routers;

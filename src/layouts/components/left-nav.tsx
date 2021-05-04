@@ -1,17 +1,61 @@
 import { Menu } from 'antd';
-import './left-nav.scss';
 import logo from '@/assets/img/logo.png';
 import { history } from 'umi';
 import { useEffect, useState } from 'react';
 import { INav, IRouter } from '@/interfaces/layout';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { makeStyles } from '@material-ui/styles';
 
 interface IProps {
   nav: INav[];
   handleNavChange: Function;
 }
 
+const useStyles = makeStyles({
+  //Logo图片
+  'layout-left-logo': {
+    '& img': {
+      width: 40,
+    },
+    padding: 20,
+    margin: '0 20px',
+  },
+
+  //导航列表
+  'menu-list': {
+    '& .ant-menu-item': {
+      position: 'relative',
+      '&::after': {
+        content: '',
+        width: 4,
+        background: '#fff',
+        borderRadius: 2,
+        position: 'absolute',
+        right: '10px !important',
+        top: '25% !important',
+        bottom: '25% !important',
+        height: 21,
+      },
+      '&:hover': {
+        '&::after': {
+          display: 'block',
+          transform: 'scaleY(1)',
+          opacity: 1,
+        },
+      },
+    },
+    '& .ant-menu-item-selected': {
+      backgroundColor: 'transparent !important',
+      '&::after': {
+        display: 'block',
+      },
+    },
+  },
+});
+
 const LeftNav = (props: IProps) => {
+  const classes = useStyles();
+
   //一级菜单当前索引
   const [navCurrentIndex, setNavCurrentIndex] = useState(0);
 
@@ -52,12 +96,17 @@ const LeftNav = (props: IProps) => {
   return (
     <>
       {/* logo图片 */}
-      <div className="layout-left-logo">
+      <div className={classes['layout-left-logo']}>
         <img src={logo} alt="" />
       </div>
       {/* 一级菜单 */}
       <Scrollbars>
-        <Menu theme="dark" mode="inline" selectedKeys={[`${navCurrentIndex}`]}>
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[`${navCurrentIndex}`]}
+          className={classes['menu-list']}
+        >
           {props.nav.map((item: INav, index: number) => {
             return (
               <Menu.Item

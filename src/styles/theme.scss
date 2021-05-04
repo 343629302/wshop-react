@@ -1,8 +1,12 @@
 body {
-  color: #595961;
-}
-span {
   font-size: 12px;
+}
+
+button {
+  outline: none !important;
+  span{
+    font-size: 13px;
+  }
 }
 
 .ant-select {
@@ -13,16 +17,109 @@ span {
     margin-top: -8px !important;
   }
 }
-.ant-select-item {
-  font-size: 12px !important;
-}
 
 .ant-btn {
   border-radius: 5px !important;
 }
 
+.ant-table {
+  border-radius: 10px !important;
+  border: 1px solid #e3e2e5;
+  overflow: hidden;
+  .ant-table-thead {
+    .ant-table-cell {
+      font-weight: bold;
+    }
+  }
+}
+
 input {
-  font-size: 12px !important;
-  height: 32px !important;
   border-radius: 5px !important;
+}
+
+.placeholder-text-color {
+  color: #c0c4cc;
+}
+.secondary-text-color {
+  color: #909399;
+}
+
+.ant-tabs-tab,
+.ant-tabs-nav::before {
+  border-color: #e4e7ed !important;
+}
+.ant-tabs-tab {
+  margin-right: 0px !important;
+  &:not(:nth-of-type(1)) {
+    border-left: none !important;
+  }
+}
+.ant-tabs-tab.ant-tabs-tab-active {
+  border-bottom-color: #fff !important;
+}
+
+.table-border-warpper {
+  .ant-table-container {
+    .ant-table-tbody {
+      tr:nth-last-of-type(1) {
+        .ant-table-cell {
+          border: none;
+        }
+      }
+    }
+  }
+}
+
+//滚动条
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(144, 147, 153, 0.5);
+}
+.el-scrollbar .el-scrollbar__wrap {
+  scrollbar-width: none; //防止火狐出现双重滚动条
+}
+
+//antd空状态
+.ant-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 !important;
+}
+
+//自定义分页样式
+.c-paging {
+  .ant-pagination-item-active {
+    background-color: #1890ff;
+    a {
+      color: #fff !important;
+    }
+  }
+}
+
+//信息样式
+.ant-message-custom-content {
+  display: flex;
+  align-items: center;
+  span{
+    position: static !important;
+  }
+}
+
+//分页前进，后退按钮样式
+.ant-pagination-item-link{
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,50 +1,98 @@
 import { history } from 'umi';
-import { Layout, Button, Select, Input } from 'antd';
+import { Layout, Button, Select, Input, Table } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { storePageListStatus, IIteration } from '@/tools/resource';
-import '@/styles/public.scss';
+import { storePageListStatus, IIteration, getKeyValue } from '@/tools/resource';
 import useAction from '@/hook/useAction';
+import { getStorePageListApi } from '@/api/store';
+import { useEffect } from 'react';
+import BottomPagination from '@/components/bottom-pagination';
+import { iTableParams } from '@/interfaces/public';
 
-const pageList = () => {
+//类型
+interface iState {
+  search: iTableParams;
+  tableList: Record<string, any>[];
+  tableTotal: number;
+}
+
+const StorePageList = () => {
   const { Footer } = Layout;
   const { Option } = Select;
   const { Search } = Input;
-  const initState = {
+  const initState: iState = {
     search: {
-      status: '',
+      status: undefined,
       keyWord: '',
+      page: 1,
+      size: 10,
     },
-    init: '',
+    tableList: [],
+    tableTotal: 0,
   };
 
-  const { state, setState, handleInputChange } = useAction(initState);
+  const columns: object[] = [
+    {
+      title: '名称',
+      dataIndex: 'name',
+      key: 'name',
+      render: (name: string) => <span className="font-bold">{name}</span>,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string) => (
+        <span>{getKeyValue(status, storePageListStatus)}</span>
+      ),
+    },
+    {
+      title: '日期',
+      dataIndex: 'date',
+      key: 'date',
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (text: string, item: any) => (
+        <>
+          <Button type="link" className="table-action-padding-0">
+            编辑
+          </Button>
+          {item.status === '0' && (
+            <Button type="link" className="table-action-padding-0">
+              发布
+            </Button>
+          )}
+          <Button type="link" className="table-action-padding-0">
+            复制
+          </Button>
+        </>
+      ),
+    },
+  ];
 
-  /**
-   * @description 页面状态选择
-   * @param {string} val
-   */
-  const handleStatusChange = (val: string) => {
-    // const form = { ...state.search, status: val };
-    // setState({ search: form });
-  };
+  const {
+    state,
+    setState,
+    handleInputChange,
+    handleSelectChange,
+    handlePageChange,
+  } = useAction(initState);
 
-  /**
-   * @description 关键字修改
-   * @param {React} event 输入框事件
-   */
-  const handleKeyWordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    // const form = { ...state.search, keyWord: value };
+  useEffect(() => {
+    getStorePageList();
+  }, [state.search.page]);
+
+  //获取店铺页面数据
+  const getStorePageList = async (): Promise<void> => {
+    const res = await getStorePageListApi(state.search);
     setState({
-      val:value
+      tableList: res.data,
     });
-    // setState({ search: form });
   };
 
-  /**
-   * @description 搜索列表
-   */
-  const handleSearchList = () => {
+  //搜索列表
+  const handleSearchList = (): void => {
     console.log(state);
   };
 
@@ -63,8 +111,13 @@ const pageList = () => {
                   allowClear
                   placeholder="全部状态"
                   style={{ width: 150 }}
-                  onSelect={(val: string) => handleStatusChange(val)}
-                  onClear={() => handleStatusChange('')}
+                  value={state.search.status}
+                  onSelect={(val) =>
+                    handleSelectChange(val, ['search', 'status'])
+                  }
+                  onClear={() =>
+                    handleSelectChange(undefined, ['search', 'status'])
+                  }
                 >
                   {storePageListStatus.map((item: IIteration) => {
                     return (
@@ -81,19 +134,36 @@ const pageList = () => {
                   style={{ width: 250 }}
                   enterButton="搜索"
                   size="middle"
+                  value={state.search.keyWord}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    handleKeyWordChange(event)
+                    handleInputChange(event, ['search', 'keyWord'])
                   }
                   onSearch={() => handleSearchList()}
                 />
               </div>
             </div>
+            <div className="public-table-warpper">
+              <Table
+                dataSource={state.tableList}
+                columns={columns}
+                rowKey="id"
+                pagination={{
+                  position: [],
+                }}
+              />
+            </div>
           </div>
         </div>
       </Scrollbars>
-      <Footer>Footer</Footer>
+      <Footer className="public-bottom-warpper">
+        <BottomPagination
+          current={state.search.page}
+          pageChange={(page: number) => handlePageChange(page)}
+          total={state.tableTotal}
+        ></BottomPagination>
+      </Footer>
     </>
   );
 };
 
-export default pageList;
+export default StorePageList;

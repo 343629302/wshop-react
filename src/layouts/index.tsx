@@ -1,14 +1,16 @@
-import { Layout } from 'antd';
+import { Layout, ConfigProvider } from 'antd';
 import '@/styles/init.scss';
-import './index.scss';
 import '@/styles/iconfont.scss';
 import '@/styles/theme.scss';
+import '@/styles/public.scss';
 import LeftNav from './components/left-nav';
 import nav from '@/routers/index';
 import { useState } from 'react';
 import { INav, IRouter } from '@/interfaces/layout';
 import { history } from 'umi';
-import { Scrollbars } from 'react-custom-scrollbars';
+import zhCN from 'antd/es/locale/zh_CN';
+import { makeStyles } from '@material-ui/styles';
+import SecondNav from './components/second-nav';
 
 interface IRouters {
   children: object;
@@ -18,12 +20,29 @@ interface IRouters {
   };
 }
 
-interface ISecondItem {
-  label: string;
-  list: IRouter[];
-}
+const useStyles = makeStyles({
+  //布局
+  'ant-layout': {
+    height: '100vh',
+    background: '#fafafa',
+    '& .ant-layout-header': {
+      backgroundColor: '#fff',
+      height: '50px',
+      lineHeight: '50px',
+      boxShadow: '0 2px 15px 0 rgba(15, 12, 70, 0.1)',
+      padding: '0px 20px',
+    },
+    '& .ant-layout-sider': {
+      overflow: 'hidden',
+    },
+    '& .ant-layout-content': {
+      display: 'flex',
+    },
+  },
+});
 
 const Layouts = (props: IRouters) => {
+  const classes = useStyles();
   const { Header, Sider, Content } = Layout;
   const [state, setState] = useState({
     //一级菜单当前索引
@@ -62,83 +81,36 @@ const Layouts = (props: IRouters) => {
     });
   };
 
-  /**
-   * @description 返回二级菜单部件
-   */
-  const secondNavWidget = (): JSX.Element => {
-    if (state.secondNavList.length > 0) {
-      const list: ISecondItem[] = [];
-      //遍历出部件数组
-      state.secondNavList.forEach((item: IRouter) => {
-        const index = list.findIndex(
-          (lItem: ISecondItem) => lItem.label === item.label,
-        );
-        if (index === -1) {
-          list.push({
-            label: item.label,
-            list: [item],
-          });
-        } else {
-          list[index].list.push(item);
-        }
-      });
-      return (
-        <div className="layout-second-nav">
-          <Scrollbars>
-            {list.map((item: ISecondItem) => {
-              return (
-                <div className="second-item" key={item.label}>
-                  <div className="second-item-title">{item.label}</div>
-                  <div className="second-item-list">
-                    {item.list.map((lItem: IRouter) => {
-                      return (
-                        <div
-                          key={lItem.path}
-                          className={
-                            state.secondNavCurrentPath === lItem.path
-                              ? 'active'
-                              : ''
-                          }
-                          onClick={() => handleSeondNavChange(lItem.path)}
-                        >
-                          {lItem.title}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="line"></div>
-                </div>
-              );
-            })}
-          </Scrollbars>
-        </div>
-      );
-    } else {
-      return <></>;
-    }
-  };
-
   return (
-    <Layout>
-      <Sider width={'120px'}>
-        <LeftNav
-          nav={nav}
-          handleNavChange={(index: number) => handleNavChange(index)}
-        ></LeftNav>
-      </Sider>
-
-      <Layout>
-        <Header>
-          <span>微商城</span>
-        </Header>
-        <Content>
-          {secondNavWidget()}
-          <div className="layout-content-body flex flex-col flex-1">
-            {props.children}
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
+    <>
+      <ConfigProvider locale={zhCN}>
+        <Layout className={classes['ant-layout']}>
+          <Sider width={'120px'}>
+            <LeftNav
+              nav={nav}
+              handleNavChange={(index: number) => handleNavChange(index)}
+            ></LeftNav>
+          </Sider>
+          <Layout>
+            <Header className="flex">
+              <span>微商城</span>
+            </Header>
+            <Content>
+              <SecondNav
+                secondNavList={state.secondNavList}
+                secondNavCurrentPath={state.secondNavCurrentPath}
+                handleSeondNavChange={(path: string) =>
+                  handleSeondNavChange(path)
+                }
+              ></SecondNav>
+              <div className="layout-content-body flex flex-col flex-1">
+                {props.children}
+              </div>
+            </Content>
+          </Layout>
+        </Layout>
+      </ConfigProvider>
+    </>
   );
 };
 

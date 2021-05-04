@@ -1,5 +1,5 @@
 const routers = {
-  title: '客户',
+  title: '营销',
   path: '/marketing',
   icon: 'icon-yingxiao',
   default: '/marketing/center',

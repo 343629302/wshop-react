@@ -19,26 +19,26 @@ const routers = {
       path: '/store/user',
       label: '系统页面',
     },
-    {
-      title: '列表模板',
-      path: '/store/list-template',
-      label: '系统页面',
-    },
-    {
-      title: '分类模板',
-      path: '/store/category-template',
-      label: '系统页面',
-    },
+    // {
+    //   title: '列表模板',
+    //   path: '/store/list-template',
+    //   label: '系统页面',
+    // },
+    // {
+    //   title: '分类模板',
+    //   path: '/store/category-template',
+    //   label: '系统页面',
+    // },
     {
       title: '搜索页',
       path: '/store/search',
       label: '系统页面',
     },
-    {
-      title: '店铺色系',
-      path: '/store/theme',
-      label: '店铺风格',
-    },
+    // {
+    //   title: '店铺色系',
+    //   path: '/store/theme',
+    //   label: '店铺风格',
+    // },
   ],
 };
 
